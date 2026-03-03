@@ -1,0 +1,42 @@
+// Prisma schema for Story Post Generator (ABTC)
+// Use Vercel Postgres in production: set DATABASE_URL in Vercel env.
+// Local dev: use SQLite or Postgres via DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  externalId  String   @unique // stable id from source URL or slug
+  title       String
+  summary     String?
+  url         String
+  source      String   // "investors" | "news"
+  section     String   // Section 1: press_releases | sec_filings | events_presentation | abtc_in_the_news
+  topicSlug   String   // Section 2 (fixed): deals | funding | operations | technology | other
+  publishedAt DateTime
+  fetchedAt   DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([section])
+  @@index([topicSlug])
+  @@index([publishedAt(sort: Desc)])
+  generatedImages GeneratedImage[]
+}
+
+model GeneratedImage {
+  id        String   @id @default(cuid())
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  imageUrl  String?  // stored path or blob URL
+  title     String
+  summary   String
+  createdAt DateTime @default(now())
+}
