@@ -14,6 +14,8 @@ A Next.js app for **American Battery Technology Company** that aggregates news a
 
 ## Setup
 
+**Quick steps:** see **[SETUP.md](./SETUP.md)** for install, run, GitHub push, and Vercel deploy.
+
 ### 1. Install dependencies
 
 ```bash
